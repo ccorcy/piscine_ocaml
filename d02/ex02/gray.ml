@@ -1,23 +1,27 @@
-let int_to_binary n =
-  let rec loop x acc = match x with
-    | x when x > 0 -> loop (x / 2) ((string_of_int (x mod 2)) ^ acc)
-    | _ -> acc
-  in loop n ""
+let pad n (str, digits) =
+  let rec loop str' x = match x with
+    | x when x < n -> loop ("0" ^ str') (x + 1)
+    | _ -> (str', x)
+  in loop str digits
 
-let nextState i = i lxor (i lsr 1)
+let int_to_bin i n =
+  let rec loop i' str cx = match i' with
+   | i' when i' > 0 -> loop (i' / 2) ((string_of_int (i' mod 2)) ^ str) (cx + 1)
+   | _ -> (str, cx)
+  in match i with
+    | 0 -> pad n ("0", 1)
+    | _ -> pad n (loop i "" 0)
 
-let pad str n =
-  let rec loop acc = match acc with
-    | str when (String.length str) < n -> loop ("0" ^ acc)
-    | _ -> acc
-  in loop str
+let binary_to_gray i = i lxor (i lsr 1)
+
+let print_gray x str = match x with
+  | x when x = 0 -> print_string str
+  | _ -> print_string (" " ^ str)
 
 let gray n =
-  let rec loop i =
-    let str = int_to_binary (nextState i) in
-    let length = String.length str in match str with
-      | str when length <= n -> print_endline (pad str n) ; loop (i + 1)
-      | _ -> ()
+  let rec loop x = match (int_to_bin (binary_to_gray x) n) with
+    | (str, digit) when digit <= n -> (print_gray x str) ; loop (x + 1)
+    | (str, digit) -> print_newline ()
   in loop 0
 
-let () = gray 3
+let () = gray 100
