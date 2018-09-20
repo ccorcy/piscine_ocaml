@@ -21,4 +21,4 @@ let rot n c =
     c
 
 let ft_rot_n n str =
-  String.map (rot (n)) str
+  String.map (rot n) str
